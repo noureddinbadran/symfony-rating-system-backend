@@ -50,6 +50,4 @@ class AuthController extends AbstractController
                 'msg' => 'something went wrong, try again'
             ], 400);
     }
-
-
 }

@@ -17,7 +17,6 @@ class RatingController extends AbstractController
 {
     /**
      * @Route("", methods="POST", name="rating.store")
-     * @Security(name="Bearer")
      */
     public function store(Request $request, RatingService $ratingService, ClientRepository $clientRepository): Response
     {
