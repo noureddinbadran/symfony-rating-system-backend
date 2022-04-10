@@ -37,6 +37,26 @@ class Project
      */
     private $title;
 
+    /**
+     * @var \Vico
+     *
+     * @ORM\ManyToOne(targetEntity="Vico")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="vico_id", referencedColumnName="id")
+     * })
+     */
+    private $vico;
+
+    /**
+     * @var \Client
+     *
+     * @ORM\ManyToOne(targetEntity="Member")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="creator_id", referencedColumnName="id")
+     * })
+     */
+    private $creator;
+
 
     public function getId(): ?int
     {
@@ -87,6 +107,30 @@ class Project
     public function setTitle(string $title): self
     {
         $this->title = $title;
+
+        return $this;
+    }
+
+    public function getVico(): ?Vico
+    {
+        return $this->vico;
+    }
+
+    public function setVico(?Vico $vico): self
+    {
+        $this->vico = $vico;
+
+        return $this;
+    }
+
+    public function getCreator(): ?Member
+    {
+        return $this->creator;
+    }
+
+    public function setCreator(?Member $creator): self
+    {
+        $this->creator = $creator;
 
         return $this;
     }

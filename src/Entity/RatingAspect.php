@@ -23,6 +23,11 @@ class RatingAspect
     private $name;
 
     /**
+     * @ORM\Column(type="string", length=64)
+     */
+    private $code;
+
+    /**
      * @ORM\Column(type="string", length=255)
      */
     private $description;
@@ -52,6 +57,18 @@ class RatingAspect
     public function setDescription(string $description): self
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    public function getCode(): ?string
+    {
+        return $this->code;
+    }
+
+    public function setCode(string $code): self
+    {
+        $this->code = $code;
 
         return $this;
     }

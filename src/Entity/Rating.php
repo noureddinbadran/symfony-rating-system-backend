@@ -28,7 +28,7 @@ class Rating
     private $project_id;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="float")
      */
     private $score;
 
@@ -36,6 +36,16 @@ class Rating
      * @ORM\Column(type="string", length=255)
      */
     private $comment;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Project::class, inversedBy="ratings")
+     */
+    private $project;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Client::class, inversedBy="ratings")
+     */
+    private $client;
 
     public function getId(): ?int
     {
@@ -71,7 +81,7 @@ class Rating
         return $this->score;
     }
 
-    public function setScore(int $score): self
+    public function setScore(float $score): self
     {
         $this->score = $score;
 
@@ -86,6 +96,30 @@ class Rating
     public function setComment(string $comment): self
     {
         $this->comment = $comment;
+
+        return $this;
+    }
+
+    public function getProject(): ?Project
+    {
+        return $this->project;
+    }
+
+    public function setProject(?Project $project): self
+    {
+        $this->project = $project;
+
+        return $this;
+    }
+
+    public function getClient(): ?Client
+    {
+        return $this->client;
+    }
+
+    public function setClient(?Client $client): self
+    {
+        $this->client = $client;
 
         return $this;
     }

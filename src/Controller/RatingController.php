@@ -2,21 +2,38 @@
 
 namespace App\Controller;
 
-use App\Repository\HotelRepository;
-use App\Repository\ReviewRepository;
+use App\Repository\ClientRepository;
+use App\Service\RatingService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * @Route("api/rating")
+ */
 class RatingController extends AbstractController
 {
 
-//    /**
-//     * @Route("/rating", methods={"GET","HEAD"})
-//     */
-//    public function getRatingAspects(): Response
+//    private $ratingRepository;
+//
+//    public function __construct(RatingRepository $ratingRepository)
 //    {
-//        $ratingAspects = $this->ratingAspectRepository->find(1);
-//        return $this->json($ratingAspects);
+//        $this->ratingRepository = $ratingRepository;
 //    }
+
+    /**
+     * @Route("", methods="POST", name="rating.store")
+     */
+    public function store(Request $request, RatingService $ratingService, ClientRepository $clientRepository): Response
+    {
+        $data = json_decode(
+            $request->getContent(),
+            true
+        );
+
+        $client = $clientRepository->find(1);
+        return $this->json($ratingService->addRating($data, $client));
+    }
+
 }

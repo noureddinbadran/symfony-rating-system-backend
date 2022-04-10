@@ -25,8 +25,16 @@ class RatingRepository extends ServiceEntityRepository
      * @throws ORMException
      * @throws OptimisticLockException
      */
-    public function add(Rating $entity, bool $flush = true): void
+    public function add($data): void
     {
+
+        $entity = new Rating();
+        $entity->setProjectId($data['project_id']);
+        $entity->setClientId(1);
+        $entity->setComment($data['comment']);
+        $entity->setScore($data['overall_satisfaction']);
+
+
         $this->_em->persist($entity);
         if ($flush) {
             $this->_em->flush();

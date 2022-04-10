@@ -28,7 +28,7 @@ class RatingDetail
     private $rating_aspect_id;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="float")
      */
     private $score;
 
@@ -66,7 +66,7 @@ class RatingDetail
         return $this->score;
     }
 
-    public function setScore(int $score): self
+    public function setScore(float $score): self
     {
         $this->score = $score;
 
