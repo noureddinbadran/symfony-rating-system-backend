@@ -51,36 +51,5 @@ class AuthController extends AbstractController
             ], 400);
     }
 
-    /**
-     * @Route("/login", methods="POST", name="login")
-     */
-    public function login(Request $request, AuthService $authService, LoggerInterface $logger)
-    {
-        try {
-        $data = json_decode(
-            $request->getContent(),
-            true
-        );
 
-        if (!$data) {
-            return $this->json([
-                'msg' => 'mssing required data'
-            ], Response::HTTP_BAD_REQUEST);
-        }
-
-            $token = $authService->login($data);
-
-            return $this->json([
-                'data' => [
-                    'token' => $token
-                ]
-            ]);
-        } catch (\Throwable $e)
-        {
-            return $this->json([
-                'data' => null,
-                'msg' => $e->getMessage(),
-            ], $e->getCode());
-        }
-    }
 }

@@ -8,18 +8,21 @@ use App\Entity\Client;
 use App\Repository\ClientRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AuthService
 {
     private $clientRepository;
     private $logger;
     private $entityManager;
+    private $userPasswordHasher;
 
-    public function __construct(ClientRepository $clientRepository, LoggerInterface $logger, EntityManagerInterface $entityManager)
+    public function __construct(ClientRepository $clientRepository, LoggerInterface $logger, EntityManagerInterface $entityManager, UserPasswordHasherInterface $userPasswordHasher)
     {
         $this->clientRepository = $clientRepository;
         $this->logger = $logger;
         $this->entityManager = $entityManager;
+        $this->userPasswordHasher = $userPasswordHasher;
     }
 
     public function register($data)
@@ -28,7 +31,9 @@ class AuthService
             $this->logger->error('yes');
             $client = new Client();
             $client->setUsername($data['username']);
-            $client->setPassword($data['password']);
+            // hashing the password before store it
+            $password = $this->userPasswordHasher->hashPassword($client, $data['password']);
+            $client->setPassword($password);
             $client->setFirstName($data['first_name']);
             $client->setLastName($data['last_name']);
             $client->setCreated(new \DateTime());
@@ -41,17 +46,5 @@ class AuthService
             $this->logger->error($e->getMessage());
             return false;
         }
-    }
-
-    public function login($data)
-    {
-        $clientRepo = $this->entityManager->getRepository(Client::class);
-
-        $entity = $clientRepo->findOneBy(['username' => $data['username']]);
-
-        if(!$entity)
-            throw new \Exception('Invalid credentials', 401);
-
-        return 'token';
     }
 }
