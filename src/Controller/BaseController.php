@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Exceptions\UserException;
 use App\Helpers\EnumManager\Enums\GeneralEnum;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -16,12 +17,14 @@ class BaseController extends AbstractController
     private TranslatorInterface $translator;
     private SerializerInterface $serializer;
     private ValidatorInterface $validator;
+    private LoggerInterface $logger;
 
-    public function __construct(TranslatorInterface $translator, SerializerInterface $serializer, ValidatorInterface $validator)
+    public function __construct(TranslatorInterface $translator, SerializerInterface $serializer, ValidatorInterface $validator, LoggerInterface $logger)
     {
         $this->translator = $translator;
         $this->serializer = $serializer;
         $this->validator = $validator;
+        $this->logger = $logger;
     }
 
     private function response(int $code, string $message = null, string $key, $data = null, array $custom = [])
@@ -48,6 +51,7 @@ class BaseController extends AbstractController
 
     public function exceptionResponse(\Throwable $e, $code = null)
     {
+        // check whether the exception is user exception, So we can expose clear information about it
         if ($e instanceof UserException) {
             return $this->json([
                 'data' => [],
@@ -55,20 +59,21 @@ class BaseController extends AbstractController
                     'status' => $e->getCode(),
                     'message' => $e->getMessage(),
                     'key' => $e->getKey(),
-                    'error_id' => null
                 ]
             ], $e->getCode());
         }
 
-//        $error_id = ErrorLog::newError($e, $code);
+        // storing the error into the log
+        $this->logger->error($e->getMessage());
+
         $msg = $this->translator->trans('Server internal error');
+
         return $this->json([
             'data' => [],
             'metaData' => [
                 'status' => Response::HTTP_INTERNAL_SERVER_ERROR,
                 'message' => $msg,
                 'key' => GeneralEnum::INTERNAL_ERROR,
-//                'error_id' => $error_id
             ]
         ], Response::HTTP_INTERNAL_SERVER_ERROR);
     }
