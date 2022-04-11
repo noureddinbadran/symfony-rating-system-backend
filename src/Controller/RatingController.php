@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Service\RatingService;
 use App\Validator\RatingRequestValidator;
+use function Symfony\Component\DependencyInjection\Loader\Configurator\env;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;

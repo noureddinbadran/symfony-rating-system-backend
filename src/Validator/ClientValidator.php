@@ -30,10 +30,10 @@ class ClientValidator
     public function validateClient(array $data)
     {
         $constraint = new Assert\Collection([
-            'last_name' => new Assert\Length(['min' => 3]),
-            'first_name' => new Assert\Length(['min' => 3]),
-            'password' => new Assert\Length(['min' => 8]),
-            'username' => new Assert\Email(),
+            'last_name' => [new Assert\Length(['min' => 3]), new Assert\NotNull(), new Assert\NotBlank()],
+            'first_name' => [new Assert\Length(['min' => 3]), new Assert\NotNull(), new Assert\NotBlank()],
+            'password' => [new Assert\Length(['min' => 8]), new Assert\NotNull(), new Assert\NotBlank()],
+            'username' => [new Assert\Email(), new Assert\NotNull(), new Assert\NotBlank()],
         ]);
 
         $validator = $this->validator->validate($data, $constraint);
