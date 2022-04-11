@@ -9,64 +9,80 @@ use App\Entity\Project;
 use App\Entity\Rating;
 use App\Entity\RatingAspect;
 use App\Entity\RatingDetail;
+use App\Exceptions\UserException;
+use App\Helpers\EnumManager\Enums\GeneralEnum;
 use App\Repository\RatingAspectRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class RatingService
 {
     private EntityManagerInterface $entityManager;
+    private TranslatorInterface $translator;
 
     public function __construct(
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        TranslatorInterface $translator
     ) {
         $this->entityManager = $entityManager;
+        $this->translator = $translator;
     }
 
-    public function addRating(array $data, Client $client): bool
+    /**
+     * @param array $data
+     * @param Client $client
+     * @throws UserException
+     * @throws \Throwable
+     */
+    public function addRating(array $data, Client $client): void
     {
+        // getting a project by project id
         $project = $this->getProject($data['project_id']);
 
-        if (!$project) {
-            return false;
-        }
+        if (!$project)
+            throw new UserException($this->translator->trans('Project not found'), GeneralEnum::NOT_FOUND, Response::HTTP_NOT_FOUND);
+
         // client can create only one review by project
         $checkRating = $this->getRating($client, $project);
 
-        if ($checkRating) {
-            return false;
-        }
+        if ($checkRating)
+            throw new UserException($this->translator->trans('You have already rated this project'), GeneralEnum::ALREADY_RATED, Response::HTTP_UNPROCESSABLE_ENTITY);
 
-//        $ratingData = $this->newRattingData($data['ratingData']);
 
-        $rating = new Rating();
-        $rating->setClient($client);
-        $rating->setProject($project);
-        $rating->setComment($data['comment']);
-        $rating->setScore($data['overall_satisfaction']);
+        // Adding the rating details ..
+        try {
+            // begin a new transaction
+            $this->entityManager->beginTransaction();
 
-//        $rating->setRating($ratingData->getRating());
+            $rating = new Rating();
+            $rating->setClient($client);
+            $rating->setProject($project);
+            $rating->setComment($data['comment']);
+            $rating->setScore($data['overall_satisfaction']);
 
-        $this->entityManager->persist($rating);
+            $this->entityManager->persist($rating);
 
-//        $ratingData->setRating($rating);
+            $this->entityManager->flush();
 
-//        $this->entityManager->persist($ratingData);
-        $this->entityManager->flush();
+            foreach ($data['details'] as $key => $value) {
+                $ratingAspect = $this->getRatingAspect($key);
 
-        foreach ($data['details'] as $key => $value)
+                $ratingDetail = new RatingDetail();
+                $ratingDetail->setRatingAspectId($ratingAspect->getId());
+                $ratingDetail->setRatingId($rating->getId());
+                $ratingDetail->setScore($value);
+                $this->entityManager->persist($ratingDetail);
+            }
+
+            $this->entityManager->flush();
+
+            $this->entityManager->commit();
+        } catch (\Throwable $e)
         {
-            $ratingAspect = $this->getRatingAspect($key);
-
-            $ratingDetail = new RatingDetail();
-            $ratingDetail->setRatingAspectId($ratingAspect->getId());
-            $ratingDetail->setRatingId($rating->getId());
-            $ratingDetail->setScore($value);
-            $this->entityManager->persist($ratingDetail);
+            $this->entityManager->rollback();
+            throw $e;
         }
-
-        $this->entityManager->flush();
-
-        return true;
     }
 
     public function getRatingAspect($aspect_code): ?RatingAspect

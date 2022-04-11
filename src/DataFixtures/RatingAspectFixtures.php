@@ -11,6 +11,7 @@ class RatingAspectFixtures extends Fixture
     public function load(ObjectManager $manager): void
     {
         //TODO it'd be better to store them into a separated file like excel-sheet
+        //Note in this way we can easily add extend the rating aspects later(adding or removing)
         $aspects = [
             [
                 'name' => 'Communication',

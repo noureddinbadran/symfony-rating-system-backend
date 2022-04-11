@@ -22,6 +22,8 @@ class RequestResolver implements ArgumentValueResolverInterface
 
     public function supports(Request $request, ArgumentMetadata $argument)
     {
+        if(!$argument->getType())
+            return false;
         $reflection = new \ReflectionClass($argument->getType());
         if ($reflection->implementsInterface(RequestInterface::class)) {
             return true;

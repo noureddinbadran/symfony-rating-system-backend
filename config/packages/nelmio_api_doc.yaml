@@ -1,12 +1,12 @@
 nelmio_api_doc:
     documentation:
         servers:
-            - url: http://localhost:8080
+            - url: http://localhost:8000
               description: API over HTTP
 
         info:
-            title: Api Vico
-            description: Api to create client and rate project vico
+            title: Vicoland rating system APIs
+            description: This API for rating a specific vico-project
             version: 1.0.0
         components:
             securitySchemes:
@@ -21,7 +21,7 @@ nelmio_api_doc:
                 post:
                     tags:
                         - Login
-                    summary: Login into the api and get token.
+                    summary: Authenticate a user and get a JWT token.
                     requestBody:
                         content:
                             application/json:
