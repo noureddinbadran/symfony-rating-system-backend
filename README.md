@@ -33,7 +33,7 @@ Fill the database by random data by running the following command
 </li>
 
 <li>
-Generate your private.pem & public.pem for JWT-TOKEN as follows:    
+Generate your private.pem & public.pem for JWT-TOKEN as follows: <br>    
     Note: You will be asked to provide a passphrase, so here you are: "44c2696b759c02484552e76231e7b492"
     For private key:
         openssl genrsa -des3 -out private.pem 2048
