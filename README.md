@@ -19,7 +19,9 @@ b- Front end server ip that use in cros allow orgin
 
 <li>
 Create the database by running the command <br>
-'php bin/console doctrine:database:create --if-not-exists' 
+```
+php bin/console doctrine:database:create --if-not-exists
+``` 
 </li>
 
 <li>
@@ -31,6 +33,12 @@ Migrate the database by running the command <br>
 Fill the database by random data by running the following command
 'php bin/console doctrine:fixtures:load'
 </li>
+
+<li>
+Generate your private.pem & public.pem for JWT-TOKEN as follows:
+
+</li>
+
 </ol>
 
 
