@@ -17,7 +17,7 @@ class BaseController extends AbstractController
     private TranslatorInterface $translator;
     private SerializerInterface $serializer;
     private ValidatorInterface $validator;
-    private LoggerInterface $logger;
+    protected LoggerInterface $logger;
 
     public function __construct(TranslatorInterface $translator, SerializerInterface $serializer, ValidatorInterface $validator, LoggerInterface $logger)
     {
