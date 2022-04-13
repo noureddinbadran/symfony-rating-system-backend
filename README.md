@@ -19,24 +19,28 @@ b- Front end server ip that use in cros allow orgin
 
 <li>
 Create the database by running the command <br>
-```
-php bin/console doctrine:database:create --if-not-exists
-``` 
+    php bin/console doctrine:database:create --if-not-exists
 </li>
 
 <li>
 Migrate the database by running the command <br>
-'php bin/console doctrine:schema:update --force' 
+    php bin/console doctrine:schema:update --force 
 </li>
 
 <li>
 Fill the database by random data by running the following command
-'php bin/console doctrine:fixtures:load'
+    php bin/console doctrine:fixtures:load
 </li>
 
 <li>
-Generate your private.pem & public.pem for JWT-TOKEN as follows:
-
+Generate your private.pem & public.pem for JWT-TOKEN as follows:    
+    Note: You will be asked to provide a passphrase, so here you are: "44c2696b759c02484552e76231e7b492"
+    For private key:
+        openssl genrsa -des3 -out private.pem 2048
+    For public key:
+        openssl rsa -in private.pem -outform PEM -pubout -out public.pem
+    
+    Copy the output files "private.pem" and "public.pem" to the following path: "config\jwt"
 </li>
 
 </ol>
@@ -55,27 +59,38 @@ b- Front end server ip that use in cros allow orgin
 
 <li>
 Create the database by running the command <br>
-'php bin/console --env=test doctrine:database:create --if-not-exists' 
+    php bin/console --env=test doctrine:database:create --if-not-exists 
 </li>
 
 <li>
 Migrate the database by running the command <br>
-'php bin/console --env=test doctrine:schema:update --force' 
+    php bin/console --env=test doctrine:schema:update --force 
 </li>
 
 <li>
 Migrate the database by running the command <br>
-'php bin/console --env=test doctrine:schema:update --force' 
+    php bin/console --env=test doctrine:schema:update --force 
 </li>
 
 <li>
 Fill the database by random data by running the following command
-'php bin/console --env=test doctrine:fixtures:load'
+    php bin/console --env=test doctrine:fixtures:load
+</li>
+
+<li>
+Generate your private.pem & public.pem for JWT-TOKEN as follows:    
+    Note: You will be asked to provide a passphrase, so here you are: "44c2696b759c02484552e76231e7b492"
+    For private key:
+        openssl genrsa -des3 -out private.pem 2048
+    For public key:
+        openssl rsa -in private.pem -outform PEM -pubout -out public.pem
+    
+    Copy the output files "private.pem" and "public.pem" to the following path: "config\jwt"
 </li>
 
 <li>
 run the unit test by running the command <br>
-"vendor/bin/phpunit"
+    vendor/bin/phpunit
 </li>
 </ol>
 
